@@ -1,0 +1,12 @@
+[
+    { "id": 1, "event_entry": "Morning workout", "date_time_created": "2024-10-14T06:30:00Z" },
+    { "id": 2, "event_entry": "Team meeting", "date_time_created": "2024-10-14T09:00:00Z" },
+    { "id": 3, "event_entry": "Lunch with client", "date_time_created": "2024-10-14T12:30:00Z" },
+    { "id": 4, "event_entry": "Project deadline", "date_time_created": "2024-10-14T15:00:00Z" },
+    { "id": 5, "event_entry": "Gym session", "date_time_created": "2024-10-14T18:00:00Z" },
+    { "id": 6, "event_entry": "Dinner with family", "date_time_created": "2024-10-14T20:00:00Z" },
+    { "id": 7, "event_entry": "Read a book", "date_time_created": "2024-10-14T22:00:00Z" },
+    { "id": 8, "event_entry": "Prepare presentation", "date_time_created": "2024-10-15T08:00:00Z" },
+    { "id": 9, "event_entry": "Doctor's appointment", "date_time_created": "2024-10-15T11:00:00Z" },
+    { "id": 10, "event_entry": "Movie night", "date_time_created": "2024-10-15T19:30:00Z" }
+  ]

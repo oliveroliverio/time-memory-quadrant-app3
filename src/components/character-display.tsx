@@ -1,184 +1,196 @@
+/** @format */
+
 'use client'
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Clock } from "lucide-react"
-
-// Character data
-const characters = [
-  { id: 0, name: 'tOOthless', time: '05:00' },
-  { id: 1, name: 'Oliver Arrow', time: '05:15' },
-  { id: 2, name: 'OB playing games', time: '05:30' },
-  { id: 3, name: 'OrChid', time: '05:45' },
-  { id: 4, name: 'OzymanDiaz', time: '06:00' },
-  // ... (add all other characters here)
-  { id: 94, name: 'Napoleon Dynamite', time: '04:30' },
-  { id: 95, name: 'NEo', time: '04:45' },
-]
-
-// Dummy event data
-const dummyEvents = [
-  { id: 1, event_entry: "Morning workout", date_time_created: "2024-10-14T06:30:00Z" },
-  { id: 2, event_entry: "Team meeting", date_time_created: "2024-10-14T09:00:00Z" },
-  { id: 3, event_entry: "Lunch with client", date_time_created: "2024-10-14T12:30:00Z" },
-  { id: 4, event_entry: "Project deadline", date_time_created: "2024-10-14T15:00:00Z" },
-  { id: 5, event_entry: "Gym session", date_time_created: "2024-10-14T18:00:00Z" },
-  { id: 6, event_entry: "Dinner with family", date_time_created: "2024-10-14T20:00:00Z" },
-  { id: 7, event_entry: "Read a book", date_time_created: "2024-10-14T22:00:00Z" },
-  { id: 8, event_entry: "Prepare presentation", date_time_created: "2024-10-15T08:00:00Z" },
-  { id: 9, event_entry: "Doctor's appointment", date_time_created: "2024-10-15T11:00:00Z" },
-  { id: 10, event_entry: "Movie night", date_time_created: "2024-10-15T19:30:00Z" },
-]
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Clock } from 'lucide-react'
+import characters from '@/app/data/characters.json'
+import events from '@/app/data/event_data.json'
 
 interface Character {
-  id: number;
-  name: string;
-  time: string;
+	id: number
+	number: number
+	prompt_name: string
+	name: string
+	time: string
 }
 
 interface Event {
-  id: number;
-  event_entry: string;
-  date_time_created: string;
+	id: number
+	event_entry: string
+	date_time_created: string
 }
 
 function getCharacterForTime(currentTime: Date): Character {
-  const hours = currentTime.getHours()
-  const minutes = currentTime.getMinutes()
-  const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+	const hours = currentTime.getHours()
+	const minutes = currentTime.getMinutes()
+	const timeString = `${hours.toString().padStart(2, '0')}:${minutes
+		.toString()
+		.padStart(2, '0')}`
 
-  let selectedCharacter = characters[0]
+	let selectedCharacter = characters[0]
 
-  for (let i = characters.length - 1; i >= 0; i--) {
-    if (characters[i].time <= timeString) {
-      selectedCharacter = characters[i]
-      break
-    }
-  }
+	for (let i = characters.length - 1; i >= 0; i--) {
+		if (characters[i].time <= timeString) {
+			selectedCharacter = characters[i]
+			break
+		}
+	}
 
-  return selectedCharacter
+	return selectedCharacter
 }
 
 function FrontCard({ currentCharacter }: { currentCharacter: Character }) {
-  return (
-    <Card className="absolute w-full h-full [backface-visibility:hidden] cursor-pointer">
-      <CardContent className="flex flex-col items-center justify-center h-full">
-        <h2 className="text-4xl font-bold text-center">{currentCharacter.name}</h2>
-        <p className="mt-4 text-lg text-gray-600">Click to see details</p>
-      </CardContent>
-    </Card>
-  )
+	return (
+		<Card className='absolute w-full h-full [backface-visibility:hidden] cursor-pointer'>
+			<CardContent className='flex flex-col items-center justify-center h-full'>
+				<h2 className='text-4xl font-bold text-center'>
+					{currentCharacter.name}
+				</h2>
+				<p className='mt-4 text-lg text-gray-600'>
+					Click to see details
+				</p>
+			</CardContent>
+		</Card>
+	)
 }
 
-function BackCard({ currentCharacter, onExpand }: { currentCharacter: Character; onExpand: () => void }) {
-  return (
-    <Card className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] cursor-pointer">
-      <CardContent className="flex flex-col items-center justify-between h-full py-8">
-        <div className="flex flex-col items-center">
-          <div className="text-6xl font-bold mb-4">#{currentCharacter.id}</div>
-          <div className="text-2xl flex items-center justify-center">
-            <Clock className="w-6 h-6 mr-2" />
-            {currentCharacter.time}
-          </div>
-        </div>
-        <Button 
-          onClick={(e) => {
-            e.stopPropagation();
-            onExpand();
-          }}
-          className="mt-4 w-3/4 max-w-xs"
-        >
-          Expand
-        </Button>
-        <p className="mt-4 text-sm text-gray-600">Click card to see character name</p>
-      </CardContent>
-    </Card>
-  )
+function BackCard({
+	currentCharacter,
+	onExpand,
+}: {
+	currentCharacter: Character
+	onExpand: () => void
+}) {
+	return (
+		<Card className='absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] cursor-pointer'>
+			<CardContent className='flex flex-col items-center justify-between h-full py-8'>
+				<div className='flex flex-col items-center'>
+					<div className='text-6xl font-bold mb-4'>
+						#{currentCharacter.number}
+					</div>
+					<div className='text-2xl flex items-center justify-center'>
+						<Clock className='w-6 h-6 mr-2' />
+						{currentCharacter.time}
+					</div>
+				</div>
+				<Button
+					onClick={(e) => {
+						e.stopPropagation()
+						onExpand()
+					}}
+					className='mt-4 w-3/4 max-w-xs'>
+					Expand
+				</Button>
+				<p className='mt-4 text-sm text-gray-600'>
+					Click card to see character name
+				</p>
+			</CardContent>
+		</Card>
+	)
 }
 
-function ExpandedView({ events, onCollapse }: { events: Event[]; onCollapse: () => void }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.8 }}
-      transition={{ duration: 0.3 }}
-      className="w-full max-w-5xl"
-    >
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        {events.map((event) => (
-          <Card key={event.id} className="cursor-pointer hover:shadow-lg transition-shadow">
-            <CardContent className="p-4">
-              <h3 className="text-lg font-semibold mb-2">{event.event_entry}</h3>
-              <p className="text-sm text-gray-600">
-                {new Date(event.date_time_created).toLocaleString()}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-      <Button 
-        onClick={onCollapse}
-        className="mt-6 mx-auto block"
-      >
-        Collapse
-      </Button>
-    </motion.div>
-  )
+function ExpandedView({
+	events,
+	onCollapse,
+}: {
+	events: Event[]
+	onCollapse: () => void
+}) {
+	return (
+		<motion.div
+			initial={{ opacity: 0, scale: 0.8 }}
+			animate={{ opacity: 1, scale: 1 }}
+			exit={{ opacity: 0, scale: 0.8 }}
+			transition={{ duration: 0.3 }}
+			className='w-full max-w-5xl'>
+			<div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4'>
+				{events.map((event) => (
+					<Card
+						key={event.id}
+						className='cursor-pointer hover:shadow-lg transition-shadow'>
+						<CardContent className='p-4'>
+							<h3 className='text-lg font-semibold mb-2'>
+								{event.event_entry}
+							</h3>
+							<p className='text-sm text-gray-600'>
+								{new Date(
+									event.date_time_created
+								).toLocaleString()}
+							</p>
+						</CardContent>
+					</Card>
+				))}
+			</div>
+			<Button
+				onClick={onCollapse}
+				className='mt-6 mx-auto block'>
+				Collapse
+			</Button>
+		</motion.div>
+	)
 }
 
 export function CharacterDisplayComponent() {
-  const [currentCharacter, setCurrentCharacter] = useState<Character>(getCharacterForTime(new Date()))
-  const [isFlipped, setIsFlipped] = useState(false)
-  const [isExpanded, setIsExpanded] = useState(false)
+	const [currentCharacter, setCurrentCharacter] = useState<Character>(
+		getCharacterForTime(new Date())
+	)
+	const [isFlipped, setIsFlipped] = useState(false)
+	const [isExpanded, setIsExpanded] = useState(false)
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentCharacter(getCharacterForTime(new Date()))
-    }, 60000) // Update every minute
+	useEffect(() => {
+		const timer = setInterval(() => {
+			setCurrentCharacter(getCharacterForTime(new Date()))
+		}, 60000) // Update every minute
 
-    return () => clearInterval(timer)
-  }, [])
+		return () => clearInterval(timer)
+	}, [])
 
-  const handleCardClick = () => {
-    if (!isExpanded) {
-      setIsFlipped(!isFlipped)
-    }
-  }
+	const handleCardClick = () => {
+		if (!isExpanded) {
+			setIsFlipped(!isFlipped)
+		}
+	}
 
-  const handleExpand = () => {
-    setIsExpanded(true)
-  }
+	const handleExpand = () => {
+		setIsExpanded(true)
+	}
 
-  const handleCollapse = () => {
-    setIsExpanded(false)
-  }
+	const handleCollapse = () => {
+		setIsExpanded(false)
+	}
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 p-4">
-      <AnimatePresence>
-        {!isExpanded ? (
-          <motion.div
-            key="card"
-            className="w-full max-w-md aspect-[3/4] [perspective:1000px]"
-            layout
-          >
-            <div
-              className={`relative w-full h-full transition-all duration-500 [transform-style:preserve-3d] ${
-                isFlipped ? '[transform:rotateY(180deg)]' : ''
-              }`}
-              onClick={handleCardClick}
-            >
-              <FrontCard currentCharacter={currentCharacter} />
-              <BackCard currentCharacter={currentCharacter} onExpand={handleExpand} />
-            </div>
-          </motion.div>
-        ) : (
-          <ExpandedView key="expanded" events={dummyEvents} onCollapse={handleCollapse} />
-        )}
-      </AnimatePresence>
-    </div>
-  )
+	return (
+		<div className='min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 p-4'>
+			<AnimatePresence>
+				{!isExpanded ? (
+					<motion.div
+						key='card'
+						className='w-full max-w-md aspect-[3/4] [perspective:1000px]'
+						layout>
+						<div
+							className={`relative w-full h-full transition-all duration-500 [transform-style:preserve-3d] ${
+								isFlipped ? '[transform:rotateY(180deg)]' : ''
+							}`}
+							onClick={handleCardClick}>
+							<FrontCard currentCharacter={currentCharacter} />
+							<BackCard
+								currentCharacter={currentCharacter}
+								onExpand={handleExpand}
+							/>
+						</div>
+					</motion.div>
+				) : (
+					<ExpandedView
+						key='expanded'
+						events={events}
+						onCollapse={handleCollapse}
+					/>
+				)}
+			</AnimatePresence>
+		</div>
+	)
 }
