@@ -7,92 +7,19 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Clock } from 'lucide-react'
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-} from '@/components/ui/dialog'
 import characters from '@/app/data/characters.json'
-// Dummy event data
-const dummyEvents = [
-	{
-		id: 1,
-		event_entry: 'Morning workout',
-		date_time_created: '2024-10-14T06:30:00Z',
-	},
-	{
-		id: 2,
-		event_entry: 'Team meeting',
-		date_time_created: '2024-10-14T09:00:00Z',
-	},
-	{
-		id: 3,
-		event_entry: 'Lunch with client',
-		date_time_created: '2024-10-14T12:30:00Z',
-	},
-	{
-		id: 4,
-		event_entry: 'Project deadline',
-		date_time_created: '2024-10-14T15:00:00Z',
-	},
-	{
-		id: 5,
-		event_entry: 'Gym session',
-		date_time_created: '2024-10-14T18:00:00Z',
-	},
-	{
-		id: 6,
-		event_entry: 'Dinner with family',
-		date_time_created: '2024-10-14T20:00:00Z',
-	},
-	{
-		id: 7,
-		event_entry: 'Read a book',
-		date_time_created: '2024-10-14T22:00:00Z',
-	},
-	{
-		id: 8,
-		event_entry: 'Prepare presentation',
-		date_time_created: '2024-10-15T08:00:00Z',
-	},
-	{
-		id: 9,
-		event_entry: "Doctor's appointment",
-		date_time_created: '2024-10-15T11:00:00Z',
-	},
-	{
-		id: 10,
-		event_entry: 'Movie night',
-		date_time_created: '2024-10-15T19:30:00Z',
-	},
-]
+import events from '@/app/data/event_data.json'
 
 interface Character {
 	id: number
 	name: string
 	time: string
-	musical_note: string
 }
 
 interface Event {
 	id: number
 	event_entry: string
 	date_time_created: string
-}
-
-interface Track {
-	id: string
-	name: string
-	artists: { name: string }[]
-	album: { name: string; images: { url: string }[] }
-}
-
-// This would typically be in a separate file or fetched from an API
-const playlistTracks: { [key: string]: string[] } = {
-	C: ['spotify:track:id1', 'spotify:track:id2', 'spotify:track:id3'],
-	D: ['spotify:track:id4', 'spotify:track:id5', 'spotify:track:id6'],
-	// ... add track IDs for all 12 musical_notes
 }
 
 function getCharacterForTime(currentTime: Date): Character {
@@ -127,9 +54,6 @@ function FrontCard({ currentCharacter }: { currentCharacter: Character }) {
 					{currentCharacter.name}
 				</h2>
 				<p className='mt-4 text-lg text-gray-600'>
-					Musical Note: {currentCharacter.musical_note}
-				</p>
-				<p className='mt-2 text-lg text-gray-600'>
 					Click to see details
 				</p>
 			</CardContent>
@@ -140,11 +64,9 @@ function FrontCard({ currentCharacter }: { currentCharacter: Character }) {
 function BackCard({
 	currentCharacter,
 	onExpand,
-	onOpenPlaylist,
 }: {
 	currentCharacter: Character
 	onExpand: () => void
-	onOpenPlaylist: () => void
 }) {
 	return (
 		<Card className='absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] cursor-pointer'>
@@ -158,24 +80,14 @@ function BackCard({
 						{currentCharacter.time}
 					</div>
 				</div>
-				<div className='flex flex-col w-3/4 max-w-xs space-y-4'>
-					<Button
-						onClick={(e) => {
-							e.stopPropagation()
-							onExpand()
-						}}
-						className='w-full'>
-						Expand
-					</Button>
-					<Button
-						onClick={(e) => {
-							e.stopPropagation()
-							onOpenPlaylist()
-						}}
-						className='w-full'>
-						Musical Note Playlist
-					</Button>
-				</div>
+				<Button
+					onClick={(e) => {
+						e.stopPropagation()
+						onExpand()
+					}}
+					className='mt-4 w-3/4 max-w-xs'>
+					Expand
+				</Button>
 				<p className='mt-4 text-sm text-gray-600'>
 					Click card to see character name
 				</p>
@@ -225,113 +137,12 @@ function ExpandedView({
 	)
 }
 
-function MusicalNotePlaylistComponent({
-	musical_note,
-}: {
-	musical_note: string
-}) {
-	const [tracks, setTracks] = useState<Track[]>([])
-	const [isLoading, setIsLoading] = useState(true)
-	const [error, setError] = useState<string | null>(null)
-
-	useEffect(() => {
-		const fetchTracks = async () => {
-			setIsLoading(true)
-			setError(null)
-			try {
-				const trackIds = playlistTracks[musical_note] || []
-				const trackPromises = trackIds.map((id) =>
-					fetch(
-						`https://api.spotify.com/v1/tracks/${id.split(':')[2]}`,
-						{
-							headers: {
-								Authorization: 'Bearer YOUR_ACCESS_TOKEN_HERE',
-							},
-						}
-					).then((res) => {
-						if (!res.ok) {
-							throw new Error(`HTTP error! status: ${res.status}`)
-						}
-						return res.json()
-					})
-				)
-				const trackData = await Promise.all(trackPromises)
-				setTracks(trackData.filter((track) => track && track.album)) // Filter out any invalid tracks
-			} catch (err) {
-				console.error('Error fetching tracks:', err)
-				setError('Failed to load tracks. Please try again later.')
-			} finally {
-				setIsLoading(false)
-			}
-		}
-
-		fetchTracks()
-	}, [musical_note])
-
-	if (isLoading) return <div>Loading...</div>
-	if (error) return <div>{error}</div>
-	if (tracks.length === 0)
-		return <div>No tracks found for this musical_note.</div>
-
-	return (
-		<div className='space-y-4'>
-			{tracks.map((track) => (
-				<div
-					key={track.id}
-					className='flex items-center space-x-4'>
-					{track.album &&
-						track.album.images &&
-						track.album.images[0] && (
-							<img
-								src={track.album.images[0].url}
-								alt={track.album.name}
-								className='w-16 h-16'
-							/>
-						)}
-					<div>
-						<h3 className='font-semibold'>{track.name}</h3>
-						<p className='text-sm text-gray-600'>
-							{track.artists.map((a) => a.name).join(', ')}
-						</p>
-					</div>
-				</div>
-			))}
-		</div>
-	)
-}
-
-function PlaylistModal({
-	isOpen,
-	onClose,
-	musical_note,
-}: {
-	isOpen: boolean
-	onClose: () => void
-	musical_note: string
-}) {
-	return (
-		<Dialog
-			open={isOpen}
-			onOpenChange={onClose}>
-			<DialogContent className='sm:max-w-[425px]'>
-				<DialogHeader>
-					<DialogTitle>
-						Playlist for musical_note: {musical_note}
-					</DialogTitle>
-				</DialogHeader>
-				<MusicalNotePlaylistComponent musical_note={musical_note} />
-			</DialogContent>
-		</Dialog>
-	)
-}
-
 export function CharacterDisplayComponent() {
 	const [currentCharacter, setCurrentCharacter] = useState<Character>(
 		getCharacterForTime(new Date())
 	)
 	const [isFlipped, setIsFlipped] = useState(false)
 	const [isExpanded, setIsExpanded] = useState(false)
-	const [isPlaylistOpen, setIsPlaylistOpen] = useState(false)
 
 	useEffect(() => {
 		const updateCharacter = () => {
@@ -360,13 +171,12 @@ export function CharacterDisplayComponent() {
 		setIsExpanded(false)
 	}
 
-	const handleOpenPlaylist = () => {
-		setIsPlaylistOpen(true)
-	}
-
-	const handleClosePlaylist = () => {
-		setIsPlaylistOpen(false)
-	}
+	// Test with specific time
+	useEffect(() => {
+		const testTime = new Date()
+		testTime.setHours(17, 9, 0) // 5:09 PM
+		console.log('Test result:', getCharacterForTime(testTime))
+	}, [])
 
 	return (
 		<div className='min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 p-4'>
@@ -385,23 +195,17 @@ export function CharacterDisplayComponent() {
 							<BackCard
 								currentCharacter={currentCharacter}
 								onExpand={handleExpand}
-								onOpenPlaylist={handleOpenPlaylist}
 							/>
 						</div>
 					</motion.div>
 				) : (
 					<ExpandedView
 						key='expanded'
-						events={dummyEvents}
+						events={events}
 						onCollapse={handleCollapse}
 					/>
 				)}
 			</AnimatePresence>
-			<PlaylistModal
-				isOpen={isPlaylistOpen}
-				onClose={handleClosePlaylist}
-				musical_note={currentCharacter.musical_note}
-			/>
 		</div>
 	)
 }
