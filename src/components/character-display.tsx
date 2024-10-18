@@ -12,8 +12,6 @@ import events from '@/app/data/event_data.json'
 
 interface Character {
 	id: number
-	number: number
-	prompt_name: string
 	name: string
 	time: string
 }
@@ -27,15 +25,20 @@ interface Event {
 function getCharacterForTime(currentTime: Date): Character {
 	const hours = currentTime.getHours()
 	const minutes = currentTime.getMinutes()
-	const timeString = `${hours.toString().padStart(2, '0')}:${minutes
-		.toString()
-		.padStart(2, '0')}`
+	const currentMinutes = hours * 60 + minutes
 
 	let selectedCharacter = characters[0]
 
-	for (let i = characters.length - 1; i >= 0; i--) {
-		if (characters[i].time <= timeString) {
+	for (let i = 0; i < characters.length; i++) {
+		const [charHours, charMinutes, charPeriod] =
+			characters[i].time.split(/:|\s/)
+		let charTotalMinutes = parseInt(charHours) * 60 + parseInt(charMinutes)
+		if (charPeriod === 'PM' && parseInt(charHours) !== 12)
+			charTotalMinutes += 12 * 60
+
+		if (charTotalMinutes <= currentMinutes) {
 			selectedCharacter = characters[i]
+		} else {
 			break
 		}
 	}
@@ -70,7 +73,7 @@ function BackCard({
 			<CardContent className='flex flex-col items-center justify-between h-full py-8'>
 				<div className='flex flex-col items-center'>
 					<div className='text-6xl font-bold mb-4'>
-						#{currentCharacter.number}
+						#{currentCharacter.id}
 					</div>
 					<div className='text-2xl flex items-center justify-center'>
 						<Clock className='w-6 h-6 mr-2' />
@@ -142,9 +145,14 @@ export function CharacterDisplayComponent() {
 	const [isExpanded, setIsExpanded] = useState(false)
 
 	useEffect(() => {
-		const timer = setInterval(() => {
-			setCurrentCharacter(getCharacterForTime(new Date()))
-		}, 60000) // Update every minute
+		const updateCharacter = () => {
+			const newCharacter = getCharacterForTime(new Date())
+			console.log('Updating character:', newCharacter)
+			setCurrentCharacter(newCharacter)
+		}
+
+		updateCharacter() // Initial update
+		const timer = setInterval(updateCharacter, 60000) // Update every minute
 
 		return () => clearInterval(timer)
 	}, [])
@@ -162,6 +170,13 @@ export function CharacterDisplayComponent() {
 	const handleCollapse = () => {
 		setIsExpanded(false)
 	}
+
+	// Test with specific time
+	useEffect(() => {
+		const testTime = new Date()
+		testTime.setHours(17, 9, 0) // 5:09 PM
+		console.log('Test result:', getCharacterForTime(testTime))
+	}, [])
 
 	return (
 		<div className='min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 p-4'>
