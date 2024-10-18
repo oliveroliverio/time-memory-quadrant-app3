@@ -13,7 +13,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog'
-import characters from '@/app/data/characters.json'
+import characters from '@/app/data/characters_5ths.json'
 // Dummy event data
 const dummyEvents = [
 	{
