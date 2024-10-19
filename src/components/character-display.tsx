@@ -13,7 +13,11 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog'
-import characters from '@/app/data/characters_5ths.json'
+
+import { getImageForNote } from '@/lib/utils/noteToImage'
+import Image from 'next/image'
+import { getCharacterForTime } from '@/lib/utils/getCharacterForTime'
+import { Character, Event, Track } from '@/types'
 // Dummy event data
 const dummyEvents = [
 	{
@@ -68,27 +72,6 @@ const dummyEvents = [
 	},
 ]
 
-interface Character {
-	id: number
-	number: number
-	name: string
-	time: string
-	musical_note: string
-}
-
-interface Event {
-	id: number
-	event_entry: string
-	date_time_created: string
-}
-
-interface Track {
-	id: string
-	name: string
-	artists: { name: string }[]
-	album: { name: string; images: { url: string }[] }
-}
-
 // This would typically be in a separate file or fetched from an API
 const playlistTracks: { [key: string]: string[] } = {
 	C: ['spotify:track:id1', 'spotify:track:id2', 'spotify:track:id3'],
@@ -105,31 +88,8 @@ const playlistTracks: { [key: string]: string[] } = {
 	B: ['spotify:track:id34', 'spotify:track:id35', 'spotify:track:id36'],
 }
 
-function getCharacterForTime(currentTime: Date): Character {
-	const hours = currentTime.getHours()
-	const minutes = currentTime.getMinutes()
-	const currentMinutes = hours * 60 + minutes
-
-	let selectedCharacter = characters[0]
-
-	for (let i = 0; i < characters.length; i++) {
-		const [charHours, charMinutes, charPeriod] =
-			characters[i].time.split(/:|\s/)
-		let charTotalMinutes = parseInt(charHours) * 60 + parseInt(charMinutes)
-		if (charPeriod === 'PM' && parseInt(charHours) !== 12)
-			charTotalMinutes += 12 * 60
-
-		if (charTotalMinutes <= currentMinutes) {
-			selectedCharacter = characters[i]
-		} else {
-			break
-		}
-	}
-
-	return selectedCharacter
-}
-
 function FrontCard({ currentCharacter }: { currentCharacter: Character }) {
+	const imagePath = getImageForNote(currentCharacter.musical_note)
 	return (
 		<Card className='absolute w-full h-full [backface-visibility:hidden] cursor-pointer'>
 			<CardContent className='flex flex-col items-center justify-center h-full'>
@@ -139,6 +99,16 @@ function FrontCard({ currentCharacter }: { currentCharacter: Character }) {
 				<p className='mt-4 text-lg text-gray-600'>
 					Musical Note: {currentCharacter.musical_note}
 				</p>
+				<Image
+					src={imagePath}
+					alt={`Key signature for ${currentCharacter.musical_note}`}
+					width={100}
+					height={100}
+					onError={(e) => {
+						console.error('Image failed to load:', imagePath)
+						e.currentTarget.style.display = 'none'
+					}}
+				/>
 				<p className='mt-2 text-lg text-gray-600'>
 					Click to see details
 				</p>
