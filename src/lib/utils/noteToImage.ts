@@ -5,11 +5,11 @@ const noteToImageMap: { [key: string]: string } = {
     "A": "4_A.png",
     "E": "5_E.png",
     "B": "6_B.png",
-    "F#/Gb": "7_F#_Gb.png",
-    "C#/Db": "8_C#_Db.png",
-    "G#/Ab": "9_G#_Ab.png",
-    "D#/Eb": "10_D#_Eb.png",
-    "A#/Bb": "11_A#_Bb.png",
+    "Fsh_Gb": "7_Fsh_Gb.png",
+    "Csh_Db": "8_Csh_Db.png",
+    "Gsh_Ab": "9_Gsh_Ab.png",
+    "Dsh_Eb": "10_Dsh_Eb.png",
+    "Ash_Bb": "11_Ash_Bb.png",
     "F": "12_F.png"
   };
 
@@ -17,7 +17,7 @@ const noteToImageMap: { [key: string]: string } = {
     const imageName = noteToImageMap[note];
     if (!imageName) {
       console.warn(`No image found for note: ${note}`);
-      return "default.png"; // Provide a default image if no match is found
+      return "/images/default.png"; // Provide a default image if no match is found
     }
     return `/images/keysignatures/${imageName}`;
   }
