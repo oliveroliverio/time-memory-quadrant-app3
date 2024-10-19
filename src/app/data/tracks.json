@@ -1,7 +1,7 @@
 [
     {
         "track_name": "Healing",
-        "artist": "Uforea, JONI",
+        "artist": ["Uforea", "JONI"],
         "key_signature": "F#",
         "chord_progressions": {
           "drop": "I II III V",
@@ -9,7 +9,20 @@
         },
         "genre": "Melodic Dubstep",
         "spotify_url": "https://open.spotify.com/track/2l6s04YydWqk88HT8mWE1D?si=949fe272a1374dd9",
-        "spotify_id": ""
+        "spotify_id": "",
+        "vsts": {
+            "synth": {
+                "Serum": "preset 1"
+            },
+            "bass": {
+                "Serum": "preset 1"
+            },
+            "drums": {
+                "Serum": "preset 1"
+            }
+
+        }
+        }
 
       },
     {
