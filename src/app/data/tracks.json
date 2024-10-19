@@ -1,5 +1,31 @@
 [
     {
+        "track_name": "",
+        "artist": ["", ""],
+        "key_signature": "",
+        "chord_progressions": {
+          "drop": "",
+          "pre-drop": "",
+          "verse":"",
+          "chorus":"",
+          "bridge":""
+        },
+        "genre": "Melodic Dubstep",
+        "spotify_url": "",
+        "spotify_id": "",
+        "vsts": {
+            "synth": {
+                "Serum": "preset 1"
+            },
+            "bass": {
+                "Serum": "preset 1"
+            },
+            "drums": {
+                "Serum": "preset 1"
+            }
+        }
+    },
+    {
         "track_name": "Healing",
         "artist": ["Uforea", "JONI"],
         "key_signature": "F#",
@@ -20,11 +46,31 @@
             "drums": {
                 "Serum": "preset 1"
             }
-
         }
+    },
+    {
+        "track_name": "Coming Home",
+        "artist": ["Z32", "Jamie Deraz"],
+        "key_signature": "E",
+        "chord_progressions": {
+          "drop": "",
+          "pre-drop": ""
+        },
+        "genre": "Melodic Dubstep",
+        "spotify_url": "https://open.spotify.com/track/16yg5SibeHtQx32HVVwMRt?si=7a4843dc92294ac0",
+        "spotify_id": "",
+        "vsts": {
+            "synth": {
+                "Serum": "preset 1"
+            },
+            "bass": {
+                "Serum": "preset 1"
+            },
+            "drums": {
+                "Serum": "preset 1"
+            }
         }
-
-      },
+    },
     {
       "track_name": "Shape of You",
       "spotify_url": "https://open.spotify.com/track/7qiZfU4dY1lWllzX7mPBI3",
