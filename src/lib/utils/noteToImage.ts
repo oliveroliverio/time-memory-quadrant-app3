@@ -19,5 +19,5 @@ const noteToImageMap: { [key: string]: string } = {
       console.warn(`No image found for note: ${note}`);
       return "default.png"; // Provide a default image if no match is found
     }
-    return `/app/data/img_keysig/${imageName}`;
+    return `/images/keysignatures/${imageName}`;
   }
