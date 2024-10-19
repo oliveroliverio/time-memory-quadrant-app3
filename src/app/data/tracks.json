@@ -1,0 +1,70 @@
+[
+    {
+        "track_name": "Healing",
+        "artist": "Uforea, JONI",
+        "key_signature": "F#",
+        "chord_progressions": {
+          "drop": "I II III V",
+          "pre-drop": "iv V VI I"
+        },
+        "genre": "Melodic Dubstep",
+        "spotify_url": "https://open.spotify.com/track/2l6s04YydWqk88HT8mWE1D?si=949fe272a1374dd9",
+        "spotify_id": ""
+
+      },
+    {
+      "track_name": "Shape of You",
+      "spotify_url": "https://open.spotify.com/track/7qiZfU4dY1lWllzX7mPBI3",
+      "spotify_id": "7qiZfU4dY1lWllzX7mPBI3",
+      "key_signature": "C# minor",
+      "chord_progressions": {
+        "verse": "vi IV I V",
+        "chorus": "I V vi IV",
+        "bridge": "IV I V vi"
+      }
+    },
+    {
+      "track_name": "Blinding Lights",
+      "spotify_url": "https://open.spotify.com/track/0VjIjW4GlUZAMYd2vXMi3b",
+      "spotify_id": "0VjIjW4GlUZAMYd2vXMi3b",
+      "key_signature": "F minor",
+      "chord_progressions": {
+        "intro": "i VI III VII",
+        "verse": "i VI III VII",
+        "chorus": "i VI III VII",
+        "bridge": "VI VII i"
+      }
+    },
+    {
+      "track_name": "Uptown Funk",
+      "spotify_url": "https://open.spotify.com/track/32OlwWuMpZ6b0aN2RZOeMS",
+      "spotify_id": "32OlwWuMpZ6b0aN2RZOeMS",
+      "key_signature": "D minor",
+      "chord_progressions": {
+        "verse": "i IV VII III",
+        "chorus": "i IV VII III",
+        "bridge": "VI VII i"
+      }
+    },
+    {
+      "track_name": "Someone Like You",
+      "spotify_url": "https://open.spotify.com/track/1HNkqx9Ahdgi1Ixy2xkKkL",
+      "spotify_id": "1HNkqx9Ahdgi1Ixy2xkKkL",
+      "key_signature": "A major",
+      "chord_progressions": {
+        "verse": "I V vi IV",
+        "chorus": "I V vi IV",
+        "bridge": "IV I V vi"
+      }
+    },
+    {
+      "track_name": "Bohemian Rhapsody",
+      "spotify_url": "https://open.spotify.com/track/3z8h0TU7ReDPLIbEnYhWZb",
+      "spotify_id": "3z8h0TU7ReDPLIbEnYhWZb",
+      "key_signature": "B♭ major",
+      "chord_progressions": {
+        "intro": "I V vi IV",
+        "verse": "I V vi IV"
+      }
+    }
+]
