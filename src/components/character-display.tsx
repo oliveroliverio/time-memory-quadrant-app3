@@ -102,8 +102,8 @@ function FrontCard({ currentCharacter }: { currentCharacter: Character }) {
 				<Image
 					src={imagePath}
 					alt={`Key signature for ${currentCharacter.musical_note}`}
-					width={100}
-					height={100}
+					width={400}
+					height={400}
 					onError={(e) => {
 						console.error('Image failed to load:', imagePath)
 						e.currentTarget.style.display = 'none'
