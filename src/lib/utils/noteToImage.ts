@@ -7,8 +7,8 @@ const noteToImageMap: { [key: string]: string } = {
     "B": "6_B.png",
     "F#_Gb": "7_Fsh_Gb.png",
     "C#_Db": "8_Csh_Db.png",
-    "G#_Ab": "9_Gsh_Ab.png",
-    "D#_Eb": "10_Dsh_Eb.png",
+    "G#_Ab": "9_Ab_Gsh.png",
+    "D#_Eb": "10_Eb_Dsh.png",
     "A#_Bb": "11_Ash_Bb.png",
     "F": "12_F.png"
   };
