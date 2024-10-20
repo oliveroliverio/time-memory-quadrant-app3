@@ -1,148 +1,99 @@
 /** @format */
 
 'use client'
-import { FrontCard } from '@/components/FrontCard'
-import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ExpandedView } from '@/components/ExpandedView'
-import { PlaylistModal } from '@/components/PlaylistModal'
-import { BackCard } from '@/components/BackCard'
-
-import { getCharacterForTime } from '@/lib/utils/getCharacterForTime'
+import { useState, useEffect } from 'react'
+import { Card, CardContent } from '@/components/ui/card'
+import Image from 'next/image'
 import { Character } from '@/types'
-// Dummy event data
-const dummyEvents = [
-	{
-		id: 1,
-		event_entry: 'Morning workout',
-		date_time_created: '2024-10-14T06:30:00Z',
-	},
-	{
-		id: 2,
-		event_entry: 'Team meeting',
-		date_time_created: '2024-10-14T09:00:00Z',
-	},
-	{
-		id: 3,
-		event_entry: 'Lunch with client',
-		date_time_created: '2024-10-14T12:30:00Z',
-	},
-	{
-		id: 4,
-		event_entry: 'Project deadline',
-		date_time_created: '2024-10-14T15:00:00Z',
-	},
-	{
-		id: 5,
-		event_entry: 'Gym session',
-		date_time_created: '2024-10-14T18:00:00Z',
-	},
-	{
-		id: 6,
-		event_entry: 'Dinner with family',
-		date_time_created: '2024-10-14T20:00:00Z',
-	},
-	{
-		id: 7,
-		event_entry: 'Read a book',
-		date_time_created: '2024-10-14T22:00:00Z',
-	},
-	{
-		id: 8,
-		event_entry: 'Prepare presentation',
-		date_time_created: '2024-10-15T08:00:00Z',
-	},
-	{
-		id: 9,
-		event_entry: "Doctor's appointment",
-		date_time_created: '2024-10-15T11:00:00Z',
-	},
-	{
-		id: 10,
-		event_entry: 'Movie night',
-		date_time_created: '2024-10-15T19:30:00Z',
-	},
-]
-
-// This would typically be in a separate file or fetched from an API
+import { getImageForNote } from '@/lib/utils/noteToImage'
+import charactersData from '@/app/data/characters_5ths.json'
 
 export function CharacterDisplayComponent() {
-	const [currentCharacter, setCurrentCharacter] = useState<Character>(
-		getCharacterForTime(new Date())
-	)
-	const [isFlipped, setIsFlipped] = useState(false)
-	const [isExpanded, setIsExpanded] = useState(false)
-	const [isPlaylistOpen, setIsPlaylistOpen] = useState(false)
+	const [characters, setCharacters] = useState<Character[]>([])
+	const [currentQuadrant, setCurrentQuadrant] = useState(0)
 
 	useEffect(() => {
-		const updateCharacter = () => {
-			const newCharacter = getCharacterForTime(new Date())
-			console.log('Updating character:', newCharacter)
-			setCurrentCharacter(newCharacter)
-		}
+		const now = new Date()
+		const currentHour24 = now.getHours()
+		const currentHour12 = currentHour24 % 12 || 12 // Convert to 12-hour format
+		const currentMinute = now.getMinutes()
+		const isPM = currentHour24 >= 12
 
-		updateCharacter() // Initial update
-		const timer = setInterval(updateCharacter, 60000) // Update every minute
+		// Calculate the index in the 96-character array (4 characters per hour * 24 hours)
+		const startIndex = ((currentHour12 - 1) * 4 + (isPM ? 48 : 0)) % 96
+		const quadrant = Math.floor(currentMinute / 15)
 
-		return () => clearInterval(timer)
+		console.log('Current time:', now.toLocaleTimeString())
+		console.log('Current hour (24h):', currentHour24)
+		console.log('Current hour (12h):', currentHour12)
+		console.log('Is PM:', isPM)
+		console.log('Current minute:', currentMinute)
+		console.log('Calculated quadrant:', quadrant)
+		console.log('Start index:', startIndex)
+
+		setCurrentQuadrant(quadrant)
+
+		const selectedCharacters = charactersData.slice(
+			startIndex,
+			startIndex + 4
+		)
+		console.log('Selected characters:', selectedCharacters)
+		setCharacters(selectedCharacters)
+
+		// Log the time ranges for each quadrant
+		const quadrantRanges = selectedCharacters.map((char, index) => {
+			const startMinute = index * 15
+			const endMinute = (index + 1) * 15 - 1
+			return `Quadrant ${index}: ${char.time} (${startMinute}-${endMinute} minutes)`
+		})
+		console.log('Quadrant time ranges:', quadrantRanges)
 	}, [])
 
-	const handleCardClick = () => {
-		if (!isExpanded) {
-			setIsFlipped(!isFlipped)
-		}
-	}
-
-	const handleExpand = () => {
-		setIsExpanded(true)
-	}
-
-	const handleCollapse = () => {
-		setIsExpanded(false)
-	}
-
-	const handleOpenPlaylist = () => {
-		setIsPlaylistOpen(true)
-	}
-
-	const handleClosePlaylist = () => {
-		setIsPlaylistOpen(false)
+	if (characters.length === 0) {
+		return <div>Loading...</div>
 	}
 
 	return (
-		<div className='min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 p-4'>
-			<AnimatePresence>
-				{!isExpanded ? (
-					<motion.div
-						key='card'
-						className='w-full max-w-md aspect-[3/4] [perspective:1000px]'
-						layout>
-						<div
-							className={`relative w-full h-full transition-all duration-500 [transform-style:preserve-3d] ${
-								isFlipped ? '[transform:rotateY(180deg)]' : ''
-							}`}
-							onClick={handleCardClick}>
-							<FrontCard currentCharacter={currentCharacter} />
-							<BackCard
-								currentCharacter={currentCharacter}
-								onExpand={handleExpand}
-								onOpenPlaylist={handleOpenPlaylist}
+		<div className='min-h-screen pt-16 flex items-center justify-center bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 p-4'>
+			<div className='flex space-x-4 items-center'>
+				{characters.map((character, index) => (
+					<Card
+						key={character.number}
+						className={`cursor-pointer transition-all duration-300 ${
+							index === currentQuadrant
+								? 'w-80 h-96 shadow-lg z-10'
+								: 'w-64 h-80 opacity-75 hover:opacity-100'
+						}`}>
+						<CardContent className='flex flex-col items-center justify-center h-full p-4'>
+							<h2
+								className={`font-bold mb-2 ${
+									index === currentQuadrant
+										? 'text-2xl'
+										: 'text-xl'
+								}`}>
+								{character.name}
+							</h2>
+							<p className='text-gray-600 mb-4'>
+								{character.time}
+							</p>
+							<Image
+								src={getImageForNote(character.musical_note)}
+								alt={`Key signature for ${character.musical_note}`}
+								width={index === currentQuadrant ? 150 : 100}
+								height={index === currentQuadrant ? 150 : 100}
 							/>
-						</div>
-					</motion.div>
-				) : (
-					<ExpandedView
-						key='expanded'
-						events={dummyEvents}
-						onCollapse={handleCollapse}
-					/>
-				)}
-			</AnimatePresence>
-			<PlaylistModal
-				isOpen={isPlaylistOpen}
-				onClose={handleClosePlaylist}
-				musical_note={currentCharacter.musical_note}
-			/>
+							<p
+								className={`mt-4 ${
+									index === currentQuadrant
+										? 'text-lg'
+										: 'text-base'
+								}`}>
+								{character.musical_note}
+							</p>
+						</CardContent>
+					</Card>
+				))}
+			</div>
 		</div>
 	)
 }
